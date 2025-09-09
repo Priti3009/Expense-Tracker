@@ -18,8 +18,9 @@ const incomeSchema = new mongoose.Schema(
     },
     category: {
       type: String,
-      required: [true, "Please select a category"],
-      enum: ["Salary", "Business", "Freelance", "Other"], // Example categories
+       default: "General"
+     // required: [true, "Please select a category"],
+      
     },
     date: {
       type: Date,

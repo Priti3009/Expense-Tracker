@@ -15,8 +15,11 @@ app.use(express.static("public"))
 app.use(cookieParser())
 
 import userRouter from './routes/user.routes.js'
+import incomeRouter from './routes/income.routes.js'
 
 app.use("/api/v1/users",userRouter); //Mounts the userRouter at /api/v1/users.Control goes to user.routes.js ( eg- http://localhost:8000/api/v1/users/register )
+
+app.use("/api/v1/income",incomeRouter);
 
 export {app};
 
