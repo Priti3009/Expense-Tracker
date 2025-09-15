@@ -16,7 +16,7 @@ export const AuthProvider=({children})=>{
         const fetchUser=async()=>{
             try {
                 const res=await api.get("/v1/users/getUser");
-                setUser=(res.data.data);  
+                setUser(res.data.data);  
             } catch (error) {
                 setUser(null); //not logged in
                 
@@ -29,7 +29,7 @@ export const AuthProvider=({children})=>{
 
     //Login function
     const login = async (email, password) => {
-        const res = await api.post("/v1/users/login", { email, password });
+        const res = await api.post("/v1/users/login",  { email, password });
         setUser(res.data.data.user);
         return res.data;
     }

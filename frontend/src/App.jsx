@@ -7,6 +7,7 @@ import Home from './pages/Home';
 import Signup from './pages/signup';
 import Login from './pages/Login.jsx';
 import { AuthProvider } from './utils/AuthContext.jsx';
+import Dashboard from './pages/Dashboard.jsx';
 
 function App() {
   const approuter=createBrowserRouter([
@@ -21,16 +22,20 @@ function App() {
     {
       path:"/login",
       element:<Login/>
+    },
+    {
+      path:"/dashboard",
+      element:<Dashboard/>
     }
   ])
 
   return (
     <>
-    <Provider store={store}>
+    
       <AuthProvider>
       <RouterProvider router={approuter}/>
       </AuthProvider>
-    </Provider>
+    
       
     </>
   )

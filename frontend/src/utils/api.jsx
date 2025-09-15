@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api=axios.create({            //makes a reuseable cient
-    baseURL:import.meta.env.VITE_API_URL || "http://localhost:5000/api", 
+    baseURL:import.meta.env.VITE_API_URL || "http://localhost:8000/api", 
     withCredentials:true,  //tells browser to send and accept cookies
 })
 

@@ -20,8 +20,8 @@ const generateAccessAndRefreshToken=async(userId)=>{
 
 const registerUser=asyncHandler(async(req,res)=>{
     //get use details from frontend
-      console.log("req.file:", req.file);
-    console.log("localPath:", req.file?.path);
+     // console.log("req.file:", req.file);
+    //console.log("localPath:", req.file?.path);
     const {name , email ,password}=req.body
     
     //check if empty
@@ -46,7 +46,7 @@ const registerUser=asyncHandler(async(req,res)=>{
 
     //upload to cloudinary
     const profilePicture=await uploadOnCloudinary(localPath);
-    console.log(profilePicture)
+    //console.log(profilePicture)
     
 
     if(!profilePicture){
