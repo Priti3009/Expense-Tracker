@@ -149,13 +149,14 @@ const logoutUser=asyncHandler(async(req,res)=>{
 
 })
 
-const getCurrentuser=asyncHandler(async(req,res)=>{
-    return res
+const getCurrentUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id).select("-password -refreshToken");
+
+  return res
     .status(200)
-    .json(
-         new ApiResponse(200,req.user._id,"Current user fetched successfully")
-    )
-})
+    .json(new ApiResponse(200, user, "Current user fetched successfully"));
+});
+
 
 const refreshAccessToken=asyncHandler(async(req,res)=>{
     const incomingRefreshToken=req.cookies.refreshToken || req.body.refreshToken
@@ -206,6 +207,6 @@ export {
     registerUser,
     loginUser,
     logoutUser,
-    getCurrentuser,
+    getCurrentUser,
     refreshAccessToken
 }

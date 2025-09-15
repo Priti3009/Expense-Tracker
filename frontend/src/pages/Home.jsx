@@ -29,7 +29,7 @@ const Home = () => {
                 </div>
             </nav>
 
-            {/* Hero / Intro Section */}
+            {/*  Intro Section */}
             <section className="flex flex-1 flex-col items-center justify-center text-center px-6 pt-32">
                 <img
                     src="bg1.jpg"
@@ -53,15 +53,15 @@ const Home = () => {
                             className="bg-white border border-emerald-500 text-emerald-500 hover:bg-emerald-500 hover:text-white px-6 py-3 rounded-xl font-semibold shadow transition"
                         >SignUp
                         </Link>
-                        <button className="bg-white border border-emerald-500 text-emerald-500 hover:bg-emerald-500 hover:text-white px-6 py-3 rounded-xl font-semibold shadow transition">
-                            Login
-                        </button>
+                         <Link
+                            to="/login"
+                            className="bg-white border border-emerald-500 text-emerald-500 hover:bg-emerald-500 hover:text-white px-6 py-3 rounded-xl font-semibold shadow transition"
+                        >Login
+                        </Link>
                     </div>
 
                 </div>
-
-
-            </section>
+                </section>
         </div>
     );
 };
