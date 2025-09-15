@@ -8,6 +8,9 @@ import Signup from './pages/signup';
 import Login from './pages/Login.jsx';
 import { AuthProvider } from './utils/AuthContext.jsx';
 import Dashboard from './pages/Dashboard.jsx';
+import Body from './pages/Body.jsx';
+import Income from './pages/Income.jsx';
+import Expense from './pages/Expense.jsx';
 
 function App() {
   const approuter=createBrowserRouter([
@@ -25,7 +28,22 @@ function App() {
     },
     {
       path:"/dashboard",
-      element:<Dashboard/>
+      element:<Body/>,
+      children:[
+        {
+          index:true,    //makes dashboard as default
+          element:<Dashboard/>
+        },
+        {
+          path:"income",
+          element:<Income/>
+        },
+        {
+          path:"expense",
+          element:<Expense/>
+        }
+        
+      ]
     }
   ])
 

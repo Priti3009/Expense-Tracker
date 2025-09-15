@@ -5,25 +5,25 @@ const Home = () => {
     return (
         <div className="min-h-screen flex flex-col font-sans bg-gray-50">
             {/* Navbar */}
-            <nav className="w-full bg-white shadow-md py-4 px-6 flex justify-between items-center fixed top-0 z-50">
+            <nav className="w-full bg-emerald-700 shadow-md py-4 px-6 flex justify-between items-center fixed top-0 z-50">
                 <div className="flex items-center gap-2">
                     <img src="/logo.png" alt="FinTrack Logo" className="h-10 w-10" />
-                    <span className="text-2xl font-bold text-emerald-600 tracking-wide">TrackIt</span>
+                    <span className="text-2xl font-bold text-white tracking-wide">TrackIt</span>
                 </div>
-                <div className="space-x-4 text-gray-700 font-medium">
+                <div className="space-x-4 text-white font-medium">
                     <Link
                         to="/"
-                        className="hover:text-emerald-600 transition"
+                        className="hover:text-emerald-500 transition"
                     >
                         Home
                     </Link>
                     <Link
                         to="/signup"
-                        className="border border-emerald-500 hover:bg-emerald-500 hover:text-white text-emerald-500 px-4 py-2 rounded-lg transition"
+                        className="border border-white hover:bg-emerald-600 hover:text-white text-white px-4 py-2 rounded-lg transition"
                     >
                         SignUp
                     </Link>
-                    <button className="border border-emerald-500 hover:bg-emerald-500 hover:text-white text-emerald-500 px-4 py-2 rounded-lg transition">
+                    <button className="border border-white hover:bg-emerald-600 hover:text-white text-white px-4 py-2 rounded-lg transition">
                         Login
                     </button>
                 </div>
