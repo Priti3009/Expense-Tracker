@@ -8,10 +8,14 @@ const Dashboard = () => {
   const [month, setMonth] = useState("");
   const [year, setYear] = useState("");
   const {user}=useAuth();
+
   const [totalIncome,setTotalIncome]=useState();
   const [totalExpense,setTotalExpense]=useState();
   const [totalSavings,setTotalSavings]=useState()
 
+  const [transactions,setTransactions]=useState([]);
+
+  //Fetch totalIncome,totalExpense,totalSavings (from /dashboard)
   useEffect(()=>{
     const getDashboardSummary=async()=>{
       try {
@@ -37,6 +41,45 @@ const Dashboard = () => {
     }
     getDashboardSummary()
   },[month,year]);     //Refetch whenever month/year changes
+
+  //Fetch recent transactions(from /income ,/expense)
+  useEffect(()=>{
+    const getTransactions=async()=>{
+      try {
+        const query=[]
+        if(month) query.push(`month=${month}`);
+        if(year) query.push(`year=${year}`);
+        const queryString=query.length?`?${query.join("&")}`:"";
+
+        const incomeRes=await api.get(`/v1/income/all${queryString}`)
+        const expenseRes=await api.get(`/v1/expense/all${queryString}`)
+
+        const incomeData=incomeRes.data.data.map((item)=>({
+          ...item,
+          type:"income"
+        }));
+
+        const expenseData=expenseRes.data.data.map((item)=>({
+          ...item,
+          type:"expense",
+        }));
+
+        const merged=[...incomeData,...expenseData].sort(
+        (a,b)=>
+          new Date(b.date) - new Date(a.date)
+      )
+
+      setTransactions(merged)
+        
+      } catch (error) {
+        console.error("Failed to fetch transactions:", error);
+        setTransactions([]);
+        
+      }
+    };
+    getTransactions();
+  },[month,year])
+
 
   return (
     <div className="p-6 space-y-6">
@@ -77,7 +120,7 @@ const Dashboard = () => {
             <option value="2025">2025</option>
             <option value="2024">2024</option>
             <option value="2023">2023</option>
-            {/* TODO: Dynamically generate years if needed */}
+            
           </select>
         </div>
       </div>
@@ -88,32 +131,42 @@ const Dashboard = () => {
         <div className="bg-white shadow rounded-xl p-6">
           <h2 className="text-lg font-semibold text-gray-600">Total Income</h2>
           <p className="mt-2 text-2xl font-bold text-emerald-600">₹{totalIncome}</p>
-          {/* TODO: Fetch filtered income */}
+         
         </div>
 
         {/* Expense Card */}
         <div className="bg-white shadow rounded-xl p-6">
           <h2 className="text-lg font-semibold text-gray-600">Total Expense</h2>
           <p className="mt-2 text-2xl font-bold text-red-500">₹{totalExpense}</p>
-          {/* TODO: Fetch filtered expense */}
+        
         </div>
 
         {/* Savings Card */}
         <div className="bg-white shadow rounded-xl p-6">
           <h2 className="text-lg font-semibold text-gray-600">Total Savings</h2>
           <p className="mt-2 text-2xl font-bold text-blue-500">₹{totalSavings}</p>
-          {/* TODO: Calculate savings = income - expense */}
+          
         </div>
       </div>
 
-      {/* --- Recent Transactions Section --- */}
+      {/* --- Recent Transactions --- */}
       <div className="bg-white shadow rounded-xl p-6">
-        <h2 className="text-lg font-semibold text-gray-700 mb-4">
-          Recent Transactions
-        </h2>
+        <h2 className="text-lg font-semibold text-gray-700 mb-4">Recent Transactions</h2>
         <div className="divide-y">
-          {/* TODO: Map through transactions for selected month/year */}
-          <p className="text-gray-400">No recent transactions</p>
+          {transactions.length > 0 ? (
+            transactions.slice(0, 5).map((tx, i) => (
+              <div key={i} className="py-2 flex justify-between">
+                <span>{tx.description || "No description"}</span>
+                <span
+                  className={tx.type === "income" ? "text-emerald-600" : "text-red-500"}
+                >
+                  {tx.type === "income" ? "+" : "-"}₹{tx.amount}
+                </span>
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-400">No recent transactions</p>
+          )}
         </div>
       </div>
 
