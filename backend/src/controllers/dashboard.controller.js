@@ -20,7 +20,6 @@ const getDashboardSummary=asyncHandler(async(req,res)=>{
     const totalIncome=await Income.aggregate([
         {
             $match:filter
-
         },
         {
             $group:{
