@@ -5,12 +5,20 @@ import DateFilter from '../components/DateFilter.jsx'
 const Income = () => {
   const [month, setMonth] = useState("");
   const [year, setYear] = useState("");
+  const [showForm, setShowForm] = useState(false);
+  const [formData, setFormData] = useState({  //used in the form 
+    title: "",
+    amount: "",
+    category: "General",
+    date: "",
+    description: "",
+
+  })
 
   const [incomes, setIncomes] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchIncomes = async () => {
+  const fetchIncomes = async () => {
       setLoading(true);
       try {
         const query = [];
@@ -27,8 +35,45 @@ const Income = () => {
         setLoading(false);
       }
     };
-    fetchIncomes();
+
+  useEffect(() => {
+    
+    fetchIncomes(); //show list 
   }, [month, year]); // <-- Refetch whenever month or year changes
+
+  const handleChange = (e) => {
+  setFormData({
+    ...formData,
+    [e.target.name]: e.target.value,
+  });
+};
+
+const handleAddIncome = async (e) => {
+  e.preventDefault();
+
+  try {
+    const res = await api.post(
+      "/v1/income/create",
+      formData
+    );
+
+    // refresh incomes list after adding
+    fetchIncomes();
+
+    // reset form & close modal
+    setFormData({
+      title: "",
+      amount: "",
+      category: "General",
+      date: "",
+      description: "",
+    });
+    setShowForm(false);
+  } catch (error) {
+    console.error("Error adding income:", error.response?.data || error.message);
+  }
+};
+
 
   return (
     <div className="p-6 space-y-6">
@@ -43,6 +88,14 @@ const Income = () => {
           setYear(year);
         }}
       />
+      {/*Create Income or Add Income*/}
+      <button
+        onClick={() => setShowForm(true)}
+        className="bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700"
+      >
+        + Add Income
+      </button>
+
 
       {/* --- Income Table --- */}
       <div className="bg-white shadow rounded-xl overflow-hidden">
@@ -92,6 +145,83 @@ const Income = () => {
           </tbody>
         </table>
       </div>
+      {showForm && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40">
+    <div className="bg-white p-6 rounded shadow-lg w-full max-w-md">
+      <h2 className="text-lg font-bold mb-4">Add Income</h2>
+      <form
+        onSubmit={handleAddIncome}
+        className="space-y-3"
+      >
+        <input
+          type="text"
+          name="title"
+          value={formData.title}
+          onChange={handleChange}
+          placeholder="Title"
+          className="w-full p-2 border rounded"
+          required
+        />
+
+        <input
+          type="number"
+          name="amount"
+          value={formData.amount}
+          onChange={handleChange}
+          placeholder="Amount"
+          className="w-full p-2 border rounded"
+          required
+        />
+
+        <select
+          name="category"
+          value={formData.category}
+          onChange={handleChange}
+          className="w-full p-2 border rounded"
+        >
+          <option>General</option>
+          <option>Salary</option>
+          <option>Business</option>
+          <option>Investment</option>
+          <option>Other</option>
+        </select>
+
+        <input
+          type="date"
+          name="date"
+          value={formData.date}
+          onChange={handleChange}
+          className="w-full p-2 border rounded"
+        />
+
+        <textarea
+          name="description"
+          value={formData.description}
+          onChange={handleChange}
+          placeholder="Description"
+          className="w-full p-2 border rounded"
+        />
+
+        <div className="flex justify-end gap-2">
+          <button
+            type="button"
+            onClick={() => setShowForm(false)}
+            className="px-4 py-2 border rounded"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700"
+          >
+            Save
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+)}
+
     </div>
   )
 }
