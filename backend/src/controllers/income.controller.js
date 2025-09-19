@@ -32,7 +32,19 @@ const createIncome=asyncHandler(async(req,res)=>{
 })
 
 const getIncomes=asyncHandler(async(req,res)=>{
-    const incomes = await Income.find({ user: req.user._id }).sort({ date: -1 });
+
+  {/* to get incomes of a particular month*/}
+   const {month,year}=req.query;
+
+    let filter = { user: req.user._id };
+
+    if(month && year){
+        const start =new Date(`${year}-${month}-01`);
+        const end=new Date(start)
+        end.setMonth(end.getMonth()+1);
+        filter.date={$gte:start, $lt:end};
+    }
+    const incomes = await Income.find(filter).sort({ date: -1 });
 
     return res
     .status(200)

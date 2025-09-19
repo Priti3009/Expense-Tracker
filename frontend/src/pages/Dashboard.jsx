@@ -1,13 +1,15 @@
 // src/pages/Dashboard.jsx
 import React, { useEffect, useState } from "react";
-import { useAuth } from "../utils/AuthContext";
-import api from "../utils/api";
-import RecentTransactions from "../components/RecentTransactions";
+import { useAuth } from "../utils/AuthContext.jsx";
+import api from "../utils/api.jsx";
+import DateFilter from "../components/DateFilter.jsx";
+import RecentTransactions from "../components/RecentTransactions.jsx";
 
 const Dashboard = () => {
   // State for month/year filter (dummy for now)
-  const [month, setMonth] = useState("");
+ const [month, setMonth] = useState("");
   const [year, setYear] = useState("");
+
   const {user}=useAuth();
 
   const [totalIncome,setTotalIncome]=useState();
@@ -84,46 +86,17 @@ const Dashboard = () => {
 
   return (
     <div className="p-6 space-y-6">
-      {/* --- Page Title --- */}
+      {/* --- Page Title + DateFilter --- */}
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
-
-        {/* --- Month/Year Selector --- */}
-        <div className="flex gap-3">
-          {/* Month Selector */}
-          <select
-            value={month}
-            onChange={(e) => setMonth(e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-          >
-            <option value="">Select Month</option>
-            <option value="01">January</option>
-            <option value="02">February</option>
-            <option value="03">March</option>
-            <option value="04">April</option>
-            <option value="05">May</option>
-            <option value="06">June</option>
-            <option value="07">July</option>
-            <option value="08">August</option>
-            <option value="09">September</option>
-            <option value="10">October</option>
-            <option value="11">November</option>
-            <option value="12">December</option>
-          </select>
-
-          {/* Year Selector */}
-          <select
-            value={year}
-            onChange={(e) => setYear(e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-          >
-            <option value="">Select Year</option>
-            <option value="2025">2025</option>
-            <option value="2024">2024</option>
-            <option value="2023">2023</option>
-            
-          </select>
-        </div>
+        <DateFilter
+          defaultMonth={month}
+          defaultYear={year}
+          onChange={({ month, year }) => {
+            setMonth(month);
+            setYear(year);
+          }}
+        />
       </div>
 
       {/* --- Summary Cards Section --- */}
