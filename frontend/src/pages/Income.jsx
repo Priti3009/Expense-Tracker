@@ -6,6 +6,10 @@ const Income = () => {
   const [month, setMonth] = useState("");
   const [year, setYear] = useState("");
   const [showForm, setShowForm] = useState(false);
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [currentId, setCurrentId] = useState(null);
+
   const [formData, setFormData] = useState({  //used in the form 
     title: "",
     amount: "",
@@ -19,48 +23,94 @@ const Income = () => {
   const [loading, setLoading] = useState(false);
 
   const fetchIncomes = async () => {
-      setLoading(true);
-      try {
-        const query = [];
-        if (month) query.push(`month=${month}`);
-        if (year) query.push(`year=${year}`);
-        const queryString = query.length ? `?${query.join("&")}` : "";
+    setLoading(true);
+    try {
+      const query = [];
+      if (month) query.push(`month=${month}`);
+      if (year) query.push(`year=${year}`);
+      const queryString = query.length ? `?${query.join("&")}` : "";
 
-        const res = await api.get(`/v1/income/all${queryString}`);
-        setIncomes(res.data.data || []);
-      } catch (error) {
-        console.error("Error fetching incomes:", error);
-        setIncomes([]);
-      } finally {
-        setLoading(false);
-      }
-    };
+      const res = await api.get(`/v1/income/all${queryString}`);
+      setIncomes(res.data.data || []);
+    } catch (error) {
+      console.error("Error fetching incomes:", error);
+      setIncomes([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    
+
     fetchIncomes(); //show list 
   }, [month, year]); // <-- Refetch whenever month or year changes
 
   const handleChange = (e) => {
-  setFormData({
-    ...formData,
-    [e.target.name]: e.target.value,
-  });
-};
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
 
-const handleAddIncome = async (e) => {
-  e.preventDefault();
+  const handleAddIncome = async (e) => {
+    e.preventDefault();
 
-  try {
-    const res = await api.post(
-      "/v1/income/create",
-      formData
-    );
+    try {
+      const res = await api.post(
+        "/v1/income/create",
+        formData
+      );
 
-    // refresh incomes list after adding
-    fetchIncomes();
+      // refresh incomes list after adding
+      fetchIncomes();
 
-    // reset form & close modal
+      // reset form & close modal
+      resetForm();
+    } catch (error) {
+      console.error("Error adding income:", error.response?.data || error.message);
+    }
+  };
+
+  //Edit income
+  const handleEditClick = (income) => {
+    setIsEditing(true);
+    setCurrentId(income._id);
+    setFormData({
+      title: income.title,
+      amount: income.amount,
+      category: income.category,
+      date: income.date.split("T")[0], // format date for input
+      description: income.description || "",
+    });
+    setShowForm(true);
+  };
+
+  const handleUpdateIncome = async (e) => {
+    e.preventDefault();
+    try {
+      await api.put(`/v1/income/${currentId}/update`, formData);
+      fetchIncomes();
+      resetForm();
+    } catch (error) {
+      console.error("Error updating income:", error.response?.data || error.message);
+    }
+  };
+  //Delete Income
+  const handleDeleteIncome=async (id)=>{
+    const confirmDelete=window.confirm("Are you sure you want to delete this income ?")
+    if(!confirmDelete) return;
+
+    try {
+      await api.delete(`/v1/income/${id}/delete`);
+      fetchIncomes();      
+    } catch (error) {
+      console.error("Error deleting income :",error.response?.data || error.message);
+            
+    }
+  }
+
+  // Reset form
+  const resetForm = () => {
     setFormData({
       title: "",
       amount: "",
@@ -68,12 +118,10 @@ const handleAddIncome = async (e) => {
       date: "",
       description: "",
     });
+    setIsEditing(false);
+    setCurrentId(null);
     setShowForm(false);
-  } catch (error) {
-    console.error("Error adding income:", error.response?.data || error.message);
-  }
-};
-
+  };
 
   return (
     <div className="p-6 space-y-6">
@@ -126,10 +174,14 @@ const handleAddIncome = async (e) => {
                     ₹{income.amount}
                   </td>
                   <td className="px-6 py-3">
-                    <button className="px-3 m-1 py-1 text-sm bg-emerald-500 text-white rounded hover:bg-emerald-600">
+                    <button
+                      onClick={() => { handleEditClick(income) }}
+                      className="px-3 m-1 py-1 text-sm bg-emerald-500 text-white rounded hover:bg-emerald-600">
                       Edit
                     </button>
-                    <button className="px-3 py-1 m-1 text-sm bg-red-500 text-white rounded hover:bg-red-600">
+                    <button 
+                    onClick={()=>{handleDeleteIncome(income._id)}}
+                    className="px-3 py-1 m-1 text-sm bg-red-500 text-white rounded hover:bg-red-600">
                       Delete
                     </button>
                   </td>
@@ -145,82 +197,83 @@ const handleAddIncome = async (e) => {
           </tbody>
         </table>
       </div>
+      {/* --- Modal Form (Add / Edit) --- */}
       {showForm && (
-  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40">
-    <div className="bg-white p-6 rounded shadow-lg w-full max-w-md">
-      <h2 className="text-lg font-bold mb-4">Add Income</h2>
-      <form
-        onSubmit={handleAddIncome}
-        className="space-y-3"
-      >
-        <input
-          type="text"
-          name="title"
-          value={formData.title}
-          onChange={handleChange}
-          placeholder="Title"
-          className="w-full p-2 border rounded"
-          required
-        />
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40">
+          <div className="bg-white p-6 rounded shadow-lg w-full max-w-md">
+            <h2 className="text-lg font-bold mb-4">
+              {isEditing ? "Edit Income" : "Add Income"}
+            </h2>
+            <form
+              onSubmit={isEditing ? handleUpdateIncome : handleAddIncome}
+              className="space-y-3"
+            >
+              <input
+                type="text"
+                name="title"
+                value={formData.title}
+                onChange={handleChange}
+                placeholder="Title"
+                className="w-full p-2 border rounded"
+                required
+              />
 
-        <input
-          type="number"
-          name="amount"
-          value={formData.amount}
-          onChange={handleChange}
-          placeholder="Amount"
-          className="w-full p-2 border rounded"
-          required
-        />
+              <input
+                type="number"
+                name="amount"
+                value={formData.amount}
+                onChange={handleChange}
+                placeholder="Amount"
+                className="w-full p-2 border rounded"
+                required
+              />
+              <select
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                className="w-full p-2 border rounded"
+              >
+                <option>General</option>
+                <option>Salary</option>
+                <option>Business</option>
+                <option>Investment</option>
+                <option>Other</option>
+              </select>
 
-        <select
-          name="category"
-          value={formData.category}
-          onChange={handleChange}
-          className="w-full p-2 border rounded"
-        >
-          <option>General</option>
-          <option>Salary</option>
-          <option>Business</option>
-          <option>Investment</option>
-          <option>Other</option>
-        </select>
+              <input
+                type="date"
+                name="date"
+                value={formData.date}
+                onChange={handleChange}
+                className="w-full p-2 border rounded"
+              />
+              <textarea
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                placeholder="Description"
+                className="w-full p-2 border rounded"
+              />
 
-        <input
-          type="date"
-          name="date"
-          value={formData.date}
-          onChange={handleChange}
-          className="w-full p-2 border rounded"
-        />
-
-        <textarea
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-          placeholder="Description"
-          className="w-full p-2 border rounded"
-        />
-
-        <div className="flex justify-end gap-2">
-          <button
-            type="button"
-            onClick={() => setShowForm(false)}
-            className="px-4 py-2 border rounded"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700"
-          >
-            Save
-          </button>
+              <div className="flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={resetForm}
+                  className="px-4 py-2 border rounded"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700"
+                >
+                  {isEditing ? "Update" : "Save"}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-      </form>
-    </div>
-  </div>
-)}
+      )}
 
     </div>
   )
