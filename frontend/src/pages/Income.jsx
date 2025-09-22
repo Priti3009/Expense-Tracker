@@ -42,8 +42,8 @@ const Income = () => {
 
   useEffect(() => {
 
-    fetchIncomes(); //show list 
-  }, [month, year]); // <-- Refetch whenever month or year changes
+    fetchIncomes(); 
+  }, [month, year]); // Refetch whenever month or year changes
 
   const handleChange = (e) => {
     setFormData({
@@ -127,7 +127,7 @@ const Income = () => {
     <div className="p-6 space-y-6">
       <h1 className="text-2xl font-bold text-gray-800">Income</h1>
 
-      {/* --- Date Filter Component --- */}
+      {/*   Date Filter Component   */}
       <DateFilter
         defaultMonth={month}
         defaultYear={year}
