@@ -1,68 +1,84 @@
 import { useState } from "react";
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../utils/api";
 
 const Signup = () => {
-    const navigate=useNavigate();
-    const [formData, setFormData] = useState({
-        name: "",
-        email: "",
-        password: "",
-    });
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
 
-    const [profilePicture, setProfilePicture] = useState(null)
-    const [message, setMessage] = useState("");
+  const [profilePicture, setProfilePicture] = useState(null)
+  const [message, setMessage] = useState("");
 
-    //handle text input
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value })
+  //handle text input
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
+
+  //handle file input(Profile Picture)
+  const handleFileChange = (e) => {
+    setProfilePicture(e.target.files[0]);
+  }
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (!profilePicture) {
+        setMessage("Profile picture is required")
+        return;
+      }
+      const data = new FormData();
+      data.append("name", formData.name)
+      console.log(formData.name)
+      data.append("email", formData.email);
+      console.log(formData.email)
+      data.append("password", formData.password);
+      console.log(formData.password)
+      data.append("profilePicture", profilePicture);
+      console.log(profilePicture)
+
+      const res = await api.post("/v1/users/register", data, { withCredentials: true }, {
+        headers: { "Content-Type": "multipart/form-data" }
+      })
+
+      setMessage(res.data.message || "User registered successfully !")
+      setFormData({ name: "", email: "", password: "" })
+      setProfilePicture(null);
+
+      setTimeout(() => {
+        navigate("/login")
+
+      }, 1500);
+
+    } catch (error) {
+      alert(error.response?.data?.message || "Signup failed")
+
     }
+  };
 
-    //handle file input(Profile Picture)
-    const handleFileChange = (e) => {
-        setProfilePicture(e.target.files[0]);
-    }
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <nav className="w-full bg-emerald-700 shadow-md py-4 px-6 flex justify-between items-center fixed top-0 z-50">
+        <div className="flex items-center gap-2">
+          <img src="/logo.png" alt="FinTrack Logo" className="h-10 w-10" />
+          <span className="text-2xl font-bold text-white tracking-wide">TrackIt</span>
+        </div>
+        <div className="space-x-4 text-white font-medium">
+          <Link
+            to="/"
+            className="hover:text-emerald-500 transition"
+          >
+            Home
+          </Link>
+        </div>
+      </nav>
 
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            if (!profilePicture) {
-                setMessage("Profile picture is required")
-                return;
-            }
-            const data = new FormData();
-            data.append("name", formData.name)
-            console.log(formData.name)
-            data.append("email", formData.email);
-            console.log(formData.email)
-            data.append("password", formData.password);
-            console.log(formData.password)
-            data.append("profilePicture", profilePicture);
-            console.log(profilePicture)
-
-            const res = await api.post("/v1/users/register", data,  { withCredentials: true },{
-                headers: { "Content-Type": "multipart/form-data" }
-            })
-
-            setMessage(res.data.message || "User registered successfully !")
-            setFormData({ name: "", email: "", password: "" })
-            setProfilePicture(null);
-
-            setTimeout(() => {
-                navigate("/login")
-                
-            }, 1500);
-
-        } catch (error) {
-            alert(error.response?.data?.message || "Signup failed")
-
-        }
-    };
-
-    return (
-         <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-md">
+        
         <h2 className="text-2xl font-bold text-center text-emerald-600 mb-6">
           Sign Up
         </h2>
@@ -131,7 +147,7 @@ const Signup = () => {
       </div>
     </div>
   );
-      
+
 }
 
 export default Signup

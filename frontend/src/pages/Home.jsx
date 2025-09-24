@@ -23,9 +23,12 @@ const Home = () => {
                     >
                         SignUp
                     </Link>
-                    <button className="border border-white hover:bg-emerald-600 hover:text-white text-white px-4 py-2 rounded-lg transition">
+                      <Link
+                        to="/login"
+                        className="border border-white hover:bg-emerald-600 hover:text-white text-white px-4 py-2 rounded-lg transition"
+                    >
                         Login
-                    </button>
+                    </Link>
                 </div>
             </nav>
 

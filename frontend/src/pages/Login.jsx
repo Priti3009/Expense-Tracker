@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../utils/AuthContext.jsx";
-import { useNavigate,Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -28,6 +28,20 @@ const Login = () => {
     };
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50">
+            <nav className="w-full bg-emerald-700 shadow-md py-4 px-6 flex justify-between items-center fixed top-0 z-50">
+                <div className="flex items-center gap-2">
+                    <img src="/logo.png" alt="FinTrack Logo" className="h-10 w-10" />
+                    <span className="text-2xl font-bold text-white tracking-wide">TrackIt</span>
+                </div>
+                <div className="space-x-4 text-white font-medium">
+                    <Link
+                        to="/"
+                        className="hover:text-emerald-500 transition"
+                    >
+                        Home
+                    </Link>
+                </div>
+            </nav>
             <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-md">
                 <h2 className="text-2xl font-bold text-center text-emerald-600 mb-6">
                     Login
