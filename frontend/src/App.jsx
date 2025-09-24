@@ -1,10 +1,8 @@
-import { Provider } from 'react-redux';
-import store from './store/store';
 import React from 'react';
 import './App.css'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import Home from './pages/Home';
-import Signup from './pages/signup';
+import Home from './pages/Home.jsx';
+import Signup from './pages/Signup.jsx';
 import Login from './pages/Login.jsx';
 import { AuthProvider } from './utils/AuthContext.jsx';
 import Dashboard from './pages/Dashboard.jsx';
