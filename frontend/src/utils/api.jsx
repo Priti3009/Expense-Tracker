@@ -11,8 +11,9 @@ api.interceptors.request.use((config)=>{    //This avoids repeating header setup
         config.headers.Authorization=`Bearer ${token}`;  //if present, attaches Authorization: Bearer <token> to the headers.
     }
     return config;
-}),(error)=>{
+},(error)=>{
     Promise.reject(error);
 }
+);
 
 export default api;
