@@ -1,13 +1,13 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
+import React from "react"
+import { NavLink } from "react-router-dom"
 
 const Sidebar = () => {
-    const linkClass = "block py-2 px-4 rounded hover:bg-emerald-600 transition";
-    const activeClass = "bg-emerald-700 text-white font-semibold";
+    const linkClass = "block py-2 px-4 rounded hover:bg-emerald-600 transition"
+    const activeClass = "bg-emerald-700 text-white font-semibold"
 
     return (
-        <div className="w-44 h-screen bg-emerald-800 text-white p-4">
-            <nav className="space-y-2">
+        <div className="w-full sm:w-44 h-auto sm:h-screen bg-emerald-800 text-white p-4 overflow-auto">
+            <nav className="flex sm:flex-col space-x-2 sm:space-x-0 sm:space-y-2">
                 <NavLink
                     to="/dashboard"
                     end
@@ -34,9 +34,8 @@ const Sidebar = () => {
                     Expense
                 </NavLink>
             </nav>
-
         </div>
     )
 }
 
-export default Sidebar;
+export default Sidebar

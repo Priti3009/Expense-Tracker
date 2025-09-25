@@ -6,15 +6,11 @@ import { Outlet } from 'react-router-dom'
 const Body = () => {
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Top Navbar */}
       <Navbar />
 
-      <div className="flex flex-1">
-        {/* Sidebar */}
+      <div className="flex flex-col sm:flex-row flex-1">
         <Sidebar />
-
-        {/* Main content where child routes render */}
-        <main className="flex-1 p-6">
+        <main className="flex-1 p-4 sm:p-6 overflow-auto">
           <Outlet />
         </main>
       </div>

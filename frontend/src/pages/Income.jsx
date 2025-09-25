@@ -124,7 +124,7 @@ const Income = () => {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 sm:p-6 space-y-6">
       <h1 className="text-2xl font-bold text-gray-800">Income</h1>
 
       {/*   Date Filter Component   */}
@@ -146,11 +146,11 @@ const Income = () => {
 
 
       {/* --- Income Table --- */}
-      <div className="bg-white shadow rounded-xl overflow-hidden">
+      <div className="bg-white shadow rounded-xl overflow-x-auto">
         <table className="min-w-full text-sm text-left">
           <thead className="bg-gray-100 text-gray-700">
             <tr>
-              <th className="px-6 py-3">Date</th>
+              <th className="px-4 py-2">Date</th>
               <th className="px-6 py-3">Source</th>
               <th className="px-6 py-3">Amount</th>
               <th className="px-6 py-3">Actions</th>
@@ -169,11 +169,11 @@ const Income = () => {
                   <td className="px-6 py-3">
                     {new Date(income.date).toLocaleDateString()}
                   </td>
-                  <td className="px-6 py-3">{income.title || "N/A"}</td>
+                  <td className="px-4 py-2">{income.title || "N/A"}</td>
                   <td className="px-6 py-3 text-emerald-600 font-semibold">
                     ₹{income.amount}
                   </td>
-                  <td className="px-6 py-3">
+                  <td className="px-4 py-2 flex flex-wrap gap-2">
                     <button
                       onClick={() => { handleEditClick(income) }}
                       className="px-3 m-1 py-1 text-sm bg-emerald-500 text-white rounded hover:bg-emerald-600">
@@ -199,7 +199,7 @@ const Income = () => {
       </div>
       {/* --- Modal Form (Add / Edit) --- */}
       {showForm && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 p-4">
           <div className="bg-white p-6 rounded shadow-lg w-full max-w-md">
             <h2 className="text-lg font-bold mb-4">
               {isEditing ? "Edit Income" : "Add Income"}
@@ -255,7 +255,7 @@ const Income = () => {
                 className="w-full p-2 border rounded"
               />
 
-              <div className="flex justify-end gap-2">
+              <div className="flex flex-col sm:flex-row justify-end gap-2">
                 <button
                   type="button"
                   onClick={resetForm}

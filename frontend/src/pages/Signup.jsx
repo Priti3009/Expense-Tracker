@@ -41,9 +41,11 @@ const Signup = () => {
       data.append("profilePicture", profilePicture);
       console.log(profilePicture)
 
-      const res = await api.post("/v1/users/register", data, { withCredentials: true }, {
-        headers: { "Content-Type": "multipart/form-data" }
-      })
+      const res = await api.post("/v1/users/register", data, {
+        withCredentials: true,
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
 
       setMessage(res.data.message || "User registered successfully !")
       setFormData({ name: "", email: "", password: "" })
@@ -78,7 +80,7 @@ const Signup = () => {
       </nav>
 
       <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-md">
-        
+
         <h2 className="text-2xl font-bold text-center text-emerald-600 mb-6">
           Sign Up
         </h2>
