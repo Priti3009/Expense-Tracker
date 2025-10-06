@@ -80,7 +80,7 @@ const Expense = () => {
     if (!confirmDelete) return;
 
     try {
-      await api(`/v1/expense/${id}/delete`)
+      await api.delete(`/v1/expense/${id}/delete`)
       fetchExpenses();
     } catch (error) {
       console.error("Error deleting income :", error.response?.data || error.message);
