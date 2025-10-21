@@ -28,15 +28,17 @@ const createExpense=asyncHandler(async(req,res)=>{
         }
     ])
 
+    const numAmount=Number(amount);
+
     const incomeSum=totalIncome[0]?.total || 0
     const expenseSum=totalExpense[0]?.total || 0
 
-    if((expenseSum +amount)>incomeSum){
+    if((expenseSum +numAmount)>incomeSum){
         throw new ApiError(400,"Expense exceeds total available income")
     }
     const expense=await Expense.create({        
         title,
-        amount,
+        amount:numAmount,
         category,
         date,
         user:req.user._id,
