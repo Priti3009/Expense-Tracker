@@ -96,7 +96,7 @@ const Expense = () => {
       fetchExpenses();
       resetForm();
     } catch (error) {
-      console.error("Error adding income:", error.response?.data || error.message);
+      console.error("Error adding expense:", error.response?.data || error.message);
     }
   }
 

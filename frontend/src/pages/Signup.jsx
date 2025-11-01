@@ -25,13 +25,13 @@ const Signup = () => {
 
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault();    //prevents page reload (which is the default behaviour of forms)
     try {
       if (!profilePicture) {
         setMessage("Profile picture is required")
         return;
       }
-      const data = new FormData();
+      const data = new FormData();   //provides a way to construct key-value pair representing formfieldds and their values
       data.append("name", formData.name)
       console.log(formData.name)
       data.append("email", formData.email);
